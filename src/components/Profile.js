@@ -24,9 +24,12 @@ export default function Profile() {
           return;
         }
 
-        const res = await axios.get("https://sbitmern1a0562-server-3.onrender.com/api/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "https://sbitmern1a0562-server-3.onrender.com/api/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         setUser(res.data);
       } catch (error) {
@@ -40,29 +43,12 @@ export default function Profile() {
     fetchProfile();
   }, [navigate]);
 
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      await axios.post(
-        "http://localhost:3001/api/logout",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("permissions");
-
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-      alert("Logout failed. Please try again.");
-    }
+  // ✅ CORRECT LOGOUT
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("permissions");
+    navigate("/login", { replace: true });
   };
 
   if (loading) {
@@ -88,7 +74,6 @@ export default function Profile() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         background: "linear-gradient(to right, #478a71ff, #003437)",
@@ -97,40 +82,25 @@ export default function Profile() {
         p: 3,
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 400,
-          p: 4,
-          borderRadius: 3,
-          textAlign: "center",
-        }}
-      >
+      <Box sx={{ width: "100%", maxWidth: 400, p: 4, borderRadius: 3 }}>
         <Avatar
           sx={{
             bgcolor: "rgba(255,255,255,0.2)",
             width: 70,
             height: 70,
-            margin: "auto",
+            m: "auto",
             mb: 2,
           }}
         >
           <AccountCircleIcon sx={{ fontSize: 40 }} />
         </Avatar>
 
-        <Typography
-          component="h1"
-          variant="h5"
-          sx={{ mb: 2, fontWeight: 600, color: "#fff" }}
-        >
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
           Welcome, {user.username} 👋
         </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{ mb: 3, color: "#ddd", fontSize: "1.1rem" }}
-        >
-          Role: <strong style={{ color: "#fff" }}>{user.role}</strong>
+        <Typography sx={{ mb: 3, color: "#ddd" }}>
+          Role: <strong>{user.role}</strong>
         </Typography>
 
         <Button
@@ -142,7 +112,6 @@ export default function Profile() {
             fontWeight: 600,
             borderRadius: 2,
             backgroundColor: "rgba(0,0,0,0.6)",
-            color: "#fff",
             "&:hover": {
               backgroundColor: "rgba(0,0,0,0.8)",
             },
@@ -155,3 +124,4 @@ export default function Profile() {
     </Box>
   );
 }
+
