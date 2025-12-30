@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import api from "../api/api";
 
 const Management = () => {
   const [management, setManagement] = useState([]);
@@ -9,8 +8,12 @@ const Management = () => {
   useEffect(() => {
     const fetchManagement = async () => {
       try {
-        const res = await api.get("/management");
-        setManagement(res.data);
+        const response = await fetch("https://your-api-base-url.com/management"); // Replace with your API endpoint
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setManagement(data);
       } catch (err) {
         console.error("QR fetch error:", err);
       } finally {
@@ -42,4 +45,3 @@ const Management = () => {
 
 export default Management;
 
- 
