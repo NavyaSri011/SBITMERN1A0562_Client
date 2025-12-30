@@ -20,7 +20,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 const ManagementTable = () => {
   const [data, setData] = useState([]);
@@ -29,12 +29,10 @@ const ManagementTable = () => {
   const [editingManagement, setEditingManagement] = useState(null);
   const [formData, setFormData] = useState({
     mname: "",
-    designation: "",
+    role: "",
     department: "",
-    qualification: "",
-    Salary: "",
+    skills: "",
   });
-
 
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
@@ -65,7 +63,7 @@ const ManagementTable = () => {
   const handleSubmit = () => {
     if (editingManagement) {
       axios
-        .put(/api/management/${editingManagement._id}, formData)
+        .put(`/api/management/${editingManagement._id}`, formData)
         .then(() => {
           fetchData();
           handleClose();
@@ -88,7 +86,7 @@ const ManagementTable = () => {
       mname: item.mname,
       role: item.role,
       department: item.department,
-      skills: item.skills
+      skills: item.skills,
     });
     setOpenDialog(true);
   };
@@ -96,7 +94,7 @@ const ManagementTable = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this record?")) {
       axios
-        .delete(/api/management/${id})
+        .delete(`/api/management/${id}`)
         .then(() => fetchData())
         .catch((err) => console.error(err));
     }
@@ -113,21 +111,34 @@ const ManagementTable = () => {
     });
   };
 
-  
   const canEdit = userRole === "management";
 
   if (loading)
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60vh" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "60vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
 
   return (
     <Paper elevation={4} sx={{ padding: 4, borderRadius: "16px", mt: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" sx={{ fontWeight: "bold", color: "#2c3e50" }}>
-          Management Details 
+          Management Details
         </Typography>
 
         {canEdit && (
@@ -144,7 +155,7 @@ const ManagementTable = () => {
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>Role</TableCell>
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>Department</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>SKills</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Skills</TableCell>
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -184,7 +195,6 @@ const ManagementTable = () => {
         </Table>
       </TableContainer>
 
-   
       <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>{editingManagement ? "Edit Management" : "Add New Management"}</DialogTitle>
         <DialogContent>
