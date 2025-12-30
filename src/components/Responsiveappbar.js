@@ -71,7 +71,7 @@ export default function ResponsiveAppBar() {
   }, [role]);
 
   const handlePageChange = (page) => {
-    navigate(/${page.toLowerCase()});
+    navigate(`/${page.toLowerCase()}`);
     setAnchorElNav(null);
   };
 
@@ -84,25 +84,22 @@ export default function ResponsiveAppBar() {
         "http://localhost:3001/api/logout",
         {},
         {
-          headers: { Authorization: Bearer ${token} },
+          headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }
       );
 
       if (res.status === 200) {
-        // clear local storage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("permissions");
 
-        // show success
         setSnack({
           open: true,
           message: "Logged out successfully!",
           severity: "success",
         });
 
-        // redirect after short delay
         setTimeout(() => navigate("/login"), 1500);
       } else {
         throw new Error("Logout failed");
