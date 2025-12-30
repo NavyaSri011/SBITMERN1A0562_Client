@@ -47,7 +47,7 @@ export default function Signup() {
 
     try {
      
-      const res = await axios.post("http://localhost:3001/api/register", {
+      const res = await axios.post("https://sbitmern1a0562-server-2.onrender.com/api/register", {
         uname: formData.uname,
         password: formData.password,
         role: formData.role,
