@@ -1,47 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG } from 'qrcode.react';
 
 const Management = () => {
   const [management, setManagement] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchManagement = async () => {
-      try {
-        const response = await fetch("https://sbitmern1a0562-server-3.onrender.com/management"); // Replace with your API endpoint
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setManagement(data);
-      } catch (err) {
-        console.error("QR fetch error:", err);
-      } finally {
+    
+    fetch("/api/management") 
+      .then((res) => res.json())
+      .then((faculty) => {
+        setManagement(management);
         setLoading(false);
-      }
-    };
-
-    fetchManagement();
-  }, []);
-
-  if (loading) {
-    return <p style={{ textAlign: "center" }}>Loading QR Code...</p>;
-  }
+      })
+      .catch((err) => {
+        console.error("Error fetching faculty data:", err);
+        setLoading(false);
+      });
+  }, );
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h2 style={{ color: "#2c3e50" }}>
-        Scan this QR Code for Management Details
-      </h2>
-
-      {management.length > 0 ? (
-        <QRCodeSVG value={JSON.stringify(management)} size={220} />
-      ) : (
-        <p>No data available</p>
+          <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h1
+        style={{
+          fontSize: "20px",          
+          fontFamily: "serif", 
+          color: "#2c3e50",        
+          fontWeight: "600",
+        }}
+      >
+        Scan this QR code for Management Details
+      </h1>
+      {management && (
+        <QRCodeSVG value={JSON.stringify(management)} />
       )}
     </div>
   );
-};
+}
 
 export default Management;
-
