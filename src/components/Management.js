@@ -8,7 +8,7 @@ const Management = () => {
   useEffect(() => {
     const fetchManagement = async () => {
       try {
-        const response = await fetch("https://your-api-base-url.com/management"); // Replace with your API endpoint
+        const response = await fetch("https://sbitmern1a0562-server-3.onrender.com/management"); // Replace with your API endpoint
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
