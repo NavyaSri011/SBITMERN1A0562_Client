@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -21,37 +20,38 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
+import api from "../api/api"; // ✅ axios instance
 
 const ManagementTable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingManagement, setEditingManagement] = useState(null);
+
   const [formData, setFormData] = useState({
     mname: "",
-    designation: "",
+    role: "",
     department: "",
-    qualification: "",
-    Salary: "",
+    skills: "",
   });
 
-
+  // 🔐 Role check
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
   const userRole = decoded?.role?.toLowerCase();
+  const canEdit = userRole === "management";
 
-  const fetchData = () => {
-    setLoading(true);
-    axios
-      .get("/api/management")
-      .then((res) => {
-        setData(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+  // 📥 Fetch data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/management");
+      setData(res.data);
+    } catch (err) {
+      console.error("Error fetching management:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -62,23 +62,17 @@ const ManagementTable = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    if (editingManagement) {
-      axios
-        .put(`/api/management/${editingManagement._id}`, formData)
-        .then(() => {
-          fetchData();
-          handleClose();
-        })
-        .catch((err) => console.error(err));
-    } else {
-      axios
-        .post("/api/management", formData)
-        .then(() => {
-          fetchData();
-          handleClose();
-        })
-        .catch((err) => console.error(err));
+  const handleSubmit = async () => {
+    try {
+      if (editingManagement) {
+        await api.put(`/management/${editingManagement._id}`, formData);
+      } else {
+        await api.post("/management", formData);
+      }
+      fetchData();
+      handleClose();
+    } catch (err) {
+      console.error("Save failed:", err);
     }
   };
 
@@ -88,17 +82,18 @@ const ManagementTable = () => {
       mname: item.mname,
       role: item.role,
       department: item.department,
-      skills: item.skills
+      skills: item.skills,
     });
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this record?")) {
-      axios
-        .delete(`/api/management/${id}`)
-        .then(() => fetchData())
-        .catch((err) => console.error(err));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+    try {
+      await api.delete(`/management/${id}`);
+      fetchData();
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
   };
 
@@ -113,25 +108,23 @@ const ManagementTable = () => {
     });
   };
 
-  
-  const canEdit = userRole === "management";
-
-  if (loading)
+  if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60vh" }}>
+      <Box sx={{ display: "flex", justifyContent: "center", height: "60vh" }}>
         <CircularProgress />
       </Box>
     );
+  }
 
   return (
-    <Paper elevation={4} sx={{ padding: 4, borderRadius: "16px", mt: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#2c3e50" }}>
-          Management Details 
+    <Paper elevation={4} sx={{ padding: 4, borderRadius: 3, mt: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+        <Typography variant="h5" fontWeight="bold">
+          Management Details
         </Typography>
 
         {canEdit && (
-          <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
+          <Button variant="contained" onClick={() => setOpenDialog(true)}>
             Add Management
           </Button>
         )}
@@ -140,24 +133,18 @@ const ManagementTable = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#2f7c81ff" }}>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Role</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Department</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>SKills</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "#2f7c81" }}>
+              <TableCell sx={{ color: "#fff" }}>Name</TableCell>
+              <TableCell sx={{ color: "#fff" }}>Role</TableCell>
+              <TableCell sx={{ color: "#fff" }}>Department</TableCell>
+              <TableCell sx={{ color: "#fff" }}>Skills</TableCell>
+              <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {data.map((item, index) => (
-              <TableRow
-                key={item._id}
-                sx={{
-                  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#e3f2fd",
-                  "&:hover": { backgroundColor: "#bbdefb", transition: "0.2s" },
-                }}
-              >
+              <TableRow key={item._id}>
                 <TableCell>{item.mname}</TableCell>
                 <TableCell>{item.role}</TableCell>
                 <TableCell>{item.department}</TableCell>
@@ -168,14 +155,14 @@ const ManagementTable = () => {
                     onClick={() => handleEdit(item)}
                     disabled={!canEdit}
                   >
-                    <Edit sx={{ opacity: canEdit ? 1 : 0.4 }} />
+                    <Edit />
                   </IconButton>
                   <IconButton
                     color="error"
                     onClick={() => handleDelete(item._id)}
                     disabled={!canEdit}
                   >
-                    <Delete sx={{ opacity: canEdit ? 1 : 0.4 }} />
+                    <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -184,42 +171,16 @@ const ManagementTable = () => {
         </Table>
       </TableContainer>
 
-   
-      <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingManagement ? "Edit Management" : "Add New Management"}</DialogTitle>
+      {/* Dialog */}
+      <Dialog open={openDialog} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>
+          {editingManagement ? "Edit Management" : "Add Management"}
+        </DialogTitle>
         <DialogContent>
-          <TextField
-            margin="dense"
-            label="Name"
-            name="mname"
-            fullWidth
-            value={formData.mname}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            label="Role"
-            name="role"
-            fullWidth
-            value={formData.role}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            label="Department"
-            name="department"
-            fullWidth
-            value={formData.department}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            label="Skills"
-            name="skills"
-            fullWidth
-            value={formData.skills}
-            onChange={handleChange}
-          />
+          <TextField fullWidth margin="dense" label="Name" name="mname" value={formData.mname} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Role" name="role" value={formData.role} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Department" name="department" value={formData.department} onChange={handleChange} />
+          <TextField fullWidth margin="dense" label="Skills" name="skills" value={formData.skills} onChange={handleChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -233,3 +194,4 @@ const ManagementTable = () => {
 };
 
 export default ManagementTable;
+
