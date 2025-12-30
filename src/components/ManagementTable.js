@@ -20,7 +20,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const ManagementTable = () => {
   const [data, setData] = useState([]);
