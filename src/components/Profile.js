@@ -24,7 +24,7 @@ export default function Profile() {
           return;
         }
 
-        const res = await axios.get("http://localhost:3001/api/profile", {
+        const res = await axios.get("https://sbitmern1a0562-server-3.onrender.com/api/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
