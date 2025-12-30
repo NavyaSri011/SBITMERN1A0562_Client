@@ -20,8 +20,7 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
-import api from "../api/api"; // ✅ axios instance
-
+import api from "../api/api"; 
 const ManagementTable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
