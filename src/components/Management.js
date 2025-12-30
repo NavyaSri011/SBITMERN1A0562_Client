@@ -1,42 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG } from "qrcode.react";
+import api from "../api/api";
 
 const Management = () => {
   const [management, setManagement] = useState([]);
-  const [ loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    
-    fetch("/api/management") 
-      .then((res) => res.json())
-      .then((faculty) => {
-        setManagement(management);
+    const fetchManagement = async () => {
+      try {
+        const res = await api.get("/management");
+        setManagement(res.data);
+      } catch (err) {
+        console.error("QR fetch error:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching faculty data:", err);
-        setLoading(false);
-      });
-  }, );
+      }
+    };
+
+    fetchManagement();
+  }, []);
+
+  if (loading) {
+    return <p style={{ textAlign: "center" }}>Loading QR Code...</p>;
+  }
 
   return (
-          <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h1
-        style={{
-          fontSize: "20px",          
-          fontFamily: "serif", 
-          color: "#2c3e50",        
-          fontWeight: "600",
-        }}
-      >
-        Scan this QR code for Management Details
-      </h1>
-      {management && (
-        <QRCodeSVG value={JSON.stringify(management)} />
+    <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h2 style={{ color: "#2c3e50" }}>
+        Scan this QR Code for Management Details
+      </h2>
+
+      {management.length > 0 ? (
+        <QRCodeSVG value={JSON.stringify(management)} size={220} />
+      ) : (
+        <p>No data available</p>
       )}
     </div>
   );
-}
+};
 
 export default Management;
 
