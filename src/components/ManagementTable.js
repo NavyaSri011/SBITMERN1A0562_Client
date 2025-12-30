@@ -34,13 +34,13 @@ const ManagementTable = () => {
     skills: "",
   });
 
-  // 🔐 Role check
+
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) : null;
   const userRole = decoded?.role?.toLowerCase();
   const canEdit = userRole === "management";
 
-  // 📥 Fetch data
+ 
   const fetchData = async () => {
     try {
       setLoading(true);
