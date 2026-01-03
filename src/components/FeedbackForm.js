@@ -24,7 +24,7 @@ const FeedbackForm = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://sbitmern1a0562-server-3.onrender.com/api/send", form);
+      const res = await axios.post("sbitmern1a0562-server-3.onrender.com/api/send", form);
       setSnack({ open: true, message: res.data.message, severity: "success" });
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
