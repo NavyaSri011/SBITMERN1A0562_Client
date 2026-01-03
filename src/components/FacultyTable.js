@@ -42,7 +42,7 @@ const FacultyTable = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("/api/faculty")
+      .get("https://sbitmern1a0562-server-3.onrender.com/api/faculty")
       .then((res) => {
         setData(res.data);
         setLoading(false);
@@ -64,7 +64,7 @@ const FacultyTable = () => {
   const handleSubmit = () => {
     if (editingFaculty) {
       axios
-        .put(`/api/faculty/${editingFaculty._id}`, formData)
+        .put(`https://sbitmern1a0562-server-3.onrender.com/api/faculty/${editingFaculty._id}`, formData)
         .then(() => {
           fetchData();
           handleClose();
@@ -72,7 +72,7 @@ const FacultyTable = () => {
         .catch((err) => console.error(err));
     } else {
       axios
-        .post("/api/faculty", formData)
+        .post("https://sbitmern1a0562-server-3.onrender.com/api/faculty", formData)
         .then(() => {
           fetchData();
           handleClose();
@@ -96,7 +96,7 @@ const FacultyTable = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this faculty?")) {
       axios
-        .delete(`/api/faculty/${id}`)
+        .delete(`https://sbitmern1a0562-server-3.onrender.com/api/faculty/${id}`)
         .then(() => fetchData())
         .catch((err) => console.error(err));
     }
