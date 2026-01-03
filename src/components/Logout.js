@@ -13,7 +13,7 @@ export default function Logout() {
     localStorage.removeItem("permissions");
 
     // Redirect to login after logout
-    navigate("/login", { replace: true });
+    navigate("https://sbitmern1a0562-server-3.onrender.com/login", { replace: true });
   }, [navigate]);
 
   return (
