@@ -50,7 +50,7 @@ const StaffTable = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("/api/staff")
+      .get("https://sbitmern1a0562-server-3.onrender.com/api/staff")
       .then((res) => {
         setData(res.data);
         setLoading(false);
@@ -74,7 +74,7 @@ const StaffTable = () => {
   const handleSubmit = () => {
     if (editingStaff) {
       axios
-        .put(`/api/staff/${editingStaff._id}`, formData)
+        .put(`https://sbitmern1a0562-server-3.onrender.com/api/staff/${editingStaff._id}`, formData)
         .then(() => {
           fetchData();
           handleClose();
@@ -82,7 +82,7 @@ const StaffTable = () => {
         .catch((err) => console.error(err));
     } else {
       axios
-        .post("/api/staff", formData)
+        .post("https://sbitmern1a0562-server-3.onrender.com/api/staff", formData)
         .then(() => {
           fetchData();
           handleClose();
@@ -107,7 +107,7 @@ const StaffTable = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this staff member?")) {
       axios
-        .delete(`/api/staff/${id}`)
+        .delete(`https://sbitmern1a0562-server-3.onrender.com/api/staff/${id}`)
         .then(() => fetchData())
         .catch((err) => console.error(err));
     }
@@ -145,7 +145,7 @@ const StaffTable = () => {
       </Box>
     );
 
-  // ✅ UI
+  
   return (
     <Paper
       elevation={4}
