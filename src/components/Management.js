@@ -7,7 +7,7 @@ const Management = () => {
 
   useEffect(() => {
     
-    fetch("/api/management") 
+    fetch("https://sbitmern1a0562-server-3.onrender.com/api/management") 
       .then((res) => res.json())
       .then((faculty) => {
         setManagement(management);
