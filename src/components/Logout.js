@@ -1,20 +1,16 @@
 import React, { useEffect } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
-  const navigate = useNavigate();
-
   useEffect(() => {
-    // Clear all auth-related data
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("permissions");
 
-    // Redirect to login after logout
-    navigate("https://sbitmern1a0562-server-3.onrender.com/login", { replace: true });
-  }, [navigate]);
+    window.location.href =
+      "https://sbitmern1a0562-server-3.onrender.com/login";
+  }, []);
 
   return (
     <Box
@@ -47,4 +43,3 @@ export default function Logout() {
     </Box>
   );
 }
-
