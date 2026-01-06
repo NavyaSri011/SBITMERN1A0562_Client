@@ -50,7 +50,7 @@ export default function Logout() {
 
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/logout",
+        "https://sbitmern1a0562-server-3.onrender.com/api/logout",
         {
           uname: formData.uname,
           password: formData.password,
