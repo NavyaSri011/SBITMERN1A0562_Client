@@ -175,7 +175,7 @@ export default function ResponsiveAppBar() {
                 cursor: "pointer",
               }}
             >
-              SBITCHATBOT
+              SBIT
             </Typography>
 
             {/* Menu icon (mobile) */}
