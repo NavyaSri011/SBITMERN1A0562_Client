@@ -127,7 +127,7 @@ export default function ResponsiveAppBar() {
         navigate("/login");
         break;
       case "Logout":
-        handleLogout();
+        navigate("/logout");
         break;
       default:
         break;
