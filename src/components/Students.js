@@ -28,13 +28,14 @@ const StudentTable = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
 
-  // Correct form fields
+  
   const [formData, setFormData] = useState({
     name: "",
-    branch: "",
-    cgpa: "",
+    Branch: "",
+    CGPA: "",
   });
 
+  
   let userRole = "student";
   try {
     const token = localStorage.getItem("token");
@@ -45,6 +46,11 @@ const StudentTable = () => {
   } catch (err) {
     console.error("JWT decode error:", err);
   }
+
+  const canEdit = userRole === "staff" || userRole === "management";
+  const canAdd = canEdit;
+  const canDelete = canEdit;
+
 
   const fetchData = () => {
     setLoading(true);
@@ -64,26 +70,37 @@ const StudentTable = () => {
     fetchData();
   }, []);
 
-  // Form change
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Submit
+  
   const handleSubmit = () => {
+    if (!formData.name || !formData.Branch || !formData.CGPA) {
+      alert("All fields are required");
+      return;
+    }
+
     if (editingStudent) {
-      // Update Student
+    
       axios
-        .put(`https://sbitmern1a0562-server-3.onrender.com/api/students/${editingStudent._id}`, formData)
+        .put(
+          `https://sbitmern1a0562-server-3.onrender.com/api/students/${editingStudent._id}`,
+          formData
+        )
         .then(() => {
           fetchData();
           handleClose();
         })
         .catch((err) => console.error(err));
     } else {
-      // Add Student
+    
       axios
-        .post("https://sbitmern1a0562-server-3.onrender.com/api/students", formData)
+        .post(
+          "https://sbitmern1a0562-server-3.onrender.com/api/students",
+          formData
+        )
         .then(() => {
           fetchData();
           handleClose();
@@ -92,43 +109,39 @@ const StudentTable = () => {
     }
   };
 
-  // Edit Button
+  
   const handleEdit = (student) => {
     setEditingStudent(student);
     setFormData({
       name: student.name,
-      branch: student.Branch, // backend returns Branch
-      cgpa: student.CGPA,
+      Branch: student.Branch,
+      CGPA: student.CGPA,
     });
     setOpenDialog(true);
   };
 
-  // Delete
+  
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       axios
-        .delete(`https://sbitmern1a0562-server-3.onrender.com/api/students/${id}`)
+        .delete(
+          `https://sbitmern1a0562-server-3.onrender.com/api/students/${id}`
+        )
         .then(() => fetchData())
         .catch((err) => console.error(err));
     }
   };
 
-  // Close Dialog
+ 
   const handleClose = () => {
     setOpenDialog(false);
     setEditingStudent(null);
-
-    // FIXED RESET
     setFormData({
       name: "",
-      branch: "",
-      cgpa: "",
+      Branch: "",
+      CGPA: "",
     });
   };
-
-  const canEdit = userRole === "staff" || userRole === "management";
-  const canAdd = userRole === "staff" || userRole === "management";
-  const canDelete = userRole === "staff" || userRole === "management";
 
   if (loading)
     return (
@@ -145,33 +158,20 @@ const StudentTable = () => {
     );
 
   return (
-    <Paper
-      elevation={4}
-      sx={{
-        padding: 4,
-        borderRadius: "16px",
-        boxShadow: "0px 4px 25px rgba(0,0,0,0.1)",
-        mt: 3,
-      }}
-    >
+    <Paper sx={{ p: 4, mt: 3, borderRadius: 3 }}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
           mb: 3,
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#2c3e50" }}>
+        <Typography variant="h5" fontWeight="bold">
           Student Details
         </Typography>
 
         {canAdd && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setOpenDialog(true)}
-          >
+          <Button variant="contained" onClick={() => setOpenDialog(true)}>
             Add Student
           </Button>
         )}
@@ -180,11 +180,11 @@ const StudentTable = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#2f7c81ff" }}>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Branch</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>CGPA</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "#2f7c81" }}>
+              <TableCell sx={{ color: "white" }}>Name</TableCell>
+              <TableCell sx={{ color: "white" }}>Branch</TableCell>
+              <TableCell sx={{ color: "white" }}>CGPA</TableCell>
+              <TableCell sx={{ color: "white" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
 
@@ -194,7 +194,6 @@ const StudentTable = () => {
                 key={student._id}
                 sx={{
                   backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#e3f2fd",
-                  "&:hover": { backgroundColor: "#bbdefb", transition: "0.2s" },
                 }}
               >
                 <TableCell>{student.name}</TableCell>
@@ -207,7 +206,7 @@ const StudentTable = () => {
                     onClick={() => canEdit && handleEdit(student)}
                     disabled={!canEdit}
                   >
-                    <Edit sx={{ opacity: canEdit ? 1 : 0.4 }} />
+                    <Edit />
                   </IconButton>
 
                   <IconButton
@@ -215,7 +214,7 @@ const StudentTable = () => {
                     onClick={() => canDelete && handleDelete(student._id)}
                     disabled={!canDelete}
                   >
-                    <Delete sx={{ opacity: canDelete ? 1 : 0.4 }} />
+                    <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -224,8 +223,12 @@ const StudentTable = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={openDialog} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingStudent ? "Edit Student" : "Add New Student"}</DialogTitle>
+      {/* Dialog */}
+      <Dialog open={openDialog} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>
+          {editingStudent ? "Edit Student" : "Add Student"}
+        </DialogTitle>
+
         <DialogContent>
           <TextField
             margin="dense"
@@ -238,17 +241,17 @@ const StudentTable = () => {
           <TextField
             margin="dense"
             label="Branch"
-            name="branch"
+            name="Branch"
             fullWidth
-            value={formData.branch}
+            value={formData.Branch}
             onChange={handleChange}
           />
           <TextField
             margin="dense"
             label="CGPA"
-            name="cgpa"
+            name="CGPA"
             fullWidth
-            value={formData.cgpa}
+            value={formData.CGPA}
             onChange={handleChange}
           />
         </DialogContent>
@@ -265,3 +268,4 @@ const StudentTable = () => {
 };
 
 export default StudentTable;
+
