@@ -81,7 +81,7 @@ export default function ResponsiveAppBar() {
       if (!token) throw new Error("No active session found.");
 
       const res = await axios.post(
-        "https://sbitmern1a0562-server-3.onrender.com/api/logout",
+        "https://sbitmern1a0562-server-4.onrender.com/api/logout",
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
