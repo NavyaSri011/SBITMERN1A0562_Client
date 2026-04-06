@@ -42,7 +42,7 @@ const FacultyTable = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("https://sbitmern1a0562-server-3.onrender.com/api/faculty")
+      .get("https://sbitmern1a0562-server-4.onrender.com/api/faculty")
       .then((res) => {
         setData(res.data);
         setLoading(false);
