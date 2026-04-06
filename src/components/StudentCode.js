@@ -7,7 +7,7 @@ const Student = () => {
 
   useEffect(() => {
    
-    fetch("https://sbitmern1a0562-server-3.onrender.com/api/students")
+    fetch("https://sbitmern1a0562-server-4.onrender.com/api/students")
       .then((res) => res.json())
       .then((student) => {
         setStudent(student);
