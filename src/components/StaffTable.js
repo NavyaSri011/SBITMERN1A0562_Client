@@ -50,7 +50,7 @@ const StaffTable = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get("https://sbitmern1a0562-server-3.onrender.com/api/staff")
+      .get("https://sbitmern1a0562-server-4.onrender.com/api/staff")
       .then((res) => {
         setData(res.data);
         setLoading(false);
