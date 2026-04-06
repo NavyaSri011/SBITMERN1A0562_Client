@@ -15,7 +15,7 @@ export default function Logout() {
     // if already logged out, redirect
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("https://sbitmern1a0562-server-3.onrender.com/login", { replace: true });
+      navigate("https://sbitmern1a0562-server-4.onrender.com/login", { replace: true });
     }
   }, [navigate]);
 
