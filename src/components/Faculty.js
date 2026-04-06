@@ -7,7 +7,7 @@ const Faculty = () => {
 
   useEffect(() => {
    
-    fetch("https://sbitmern1a0562-server-3.onrender.com/api/faculty") 
+    fetch("https://sbitmern1a0562-server-4.onrender.com/api/faculty") 
       .then((res) => res.json())
       .then((faculty) => {
         setFaculty(faculty);
